@@ -9,7 +9,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
-const { Image, vars } = createSystem({
+const { vars } = createSystem({
   fonts: {
     default: [
       {
@@ -69,9 +69,16 @@ app.frame('/', (c) => {
     image: (
       <div style={{
         display: 'flex',
+        backgroundColor: 'black',
+        color: 'white',
         width: '100%',
         height: '100%',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
       }}>
         <div>Endless Scroll</div>
       </div>
