@@ -8,8 +8,25 @@ import { handle } from 'frog/vercel'
 import dotenv from 'dotenv'
 dotenv.config()
 
+const questions = [
+  {
+    question: 'Who is a co-founder of Scroll?',
+    answers: ['Seung Yoon Lee', 'Sandy Peng', 'Jason Zhao', 'Cecilia Hsueh'],
+    correctAnswer: 'Sandy Peng'
+  },
+  {
+    question: 'Which is not EVM compatible?',
+    answers: ['Aptos', 'BNB Chain', 'Scroll', 'Metis'],
+    correctAnswer: 'Aptos'
+  },
+  {
+    question: 'When was Scroll founded?',
+    answers: ['2019', '2020', '2021', '2022'],
+    correctAnswer: '2021'
+  },
+]
 
-const { vars } = createSystem({
+const { Image, vars } = createSystem({
   fonts: {
     default: [
       {
@@ -41,8 +58,10 @@ const { vars } = createSystem({
 
 // Define the State type
 type State = {
-  openaiResponse: any | null;
+  currentQuestionIndex: number;
   points: number;
+  counter: number;
+  inARow: number;
 }
 
 // Initialize the Frog app with the State type and initial state
@@ -53,8 +72,10 @@ export const app = new Frog<{ State: State }>({
   assetsPath: "/",
   basePath: "/api",
   initialState: {
-    openaiResponse: null,
-    points: 0
+    currentQuestionIndex: 0,
+    points: 0,
+    counter: 0,
+    inARow: 0,
   }
 }).use(
   neynar({
@@ -65,7 +86,7 @@ export const app = new Frog<{ State: State }>({
 
 app.frame('/', (c) => {
   return c.res({
-    action: '/translation',
+    action: '/q',
     image: (
       <div style={{
         display: 'flex',
@@ -80,11 +101,125 @@ app.frame('/', (c) => {
         fontWeight: 500,
         fontFamily: 'Poppins, sans-serif',
       }}>
-        <div>Endless Scroll</div>
+        <Image src='/landing.png'></Image>
       </div>
     ),
     intents: [
-      <Button action="/translation">Start learning!</Button>,
+      <Button>Start!</Button>,
+    ],
+  })
+})
+
+app.frame('/q', (c) => {
+  const { deriveState } = c;
+  const questionIndex = Math.floor(Math.random() * questions.length);
+  const question = questions[questionIndex];
+  const state = deriveState(() => { });
+  state.currentQuestionIndex = questionIndex;
+  state.counter += 1;
+
+  return c.res({
+    action: '/a',
+    image: (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fef1dd',
+        color: 'black',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+        padding: '70px',
+      }}>
+        <div style={{ fontWeight: 600, marginBottom: '30px' }}>{`${question.question}`}</div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          width: '100%',
+          marginLeft: '40px',
+        }}>
+          {question.answers.map((answer, index) => (
+            <div style={{ fontSize: '40px' }} key={index}>{`${String.fromCharCode(97 + index)}) ${answer}`}</div>
+          ))}
+        </div>
+      </div>
+    ),
+    intents: [
+      <Button value={question.answers[0]}>a</Button>,
+      <Button value={question.answers[1]}>b</Button>,
+      <Button value={question.answers[2]}>c</Button>,
+      <Button value={question.answers[3]}>d</Button>,
+    ],
+  })
+})
+
+app.frame('/a', (c) => {
+  const { buttonValue } = c;
+  const { deriveState } = c;
+  const state = deriveState(() => { });
+  const correctAnsewr = questions[state.currentQuestionIndex].correctAnswer == buttonValue;
+  if (correctAnsewr) {
+    state.points += 100;
+  }
+  let mintNext = false;
+  if (state.counter == 10) {
+    mintNext = true;
+    state.counter = 0;
+  }
+
+  return c.res({
+    action: mintNext ? '/mint' : '/q',
+    image: (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fef1dd',
+        color: 'black',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+        padding: '70px',
+      }}>
+        <div>{`${correctAnsewr ? 'Correct!' : 'Incorrect!'}`}</div>
+        {!correctAnsewr && <div>{`Correct answer: ${questions[state.currentQuestionIndex].correctAnswer}`}</div>}
+        <div>{`${state.points}`}</div>
+      </div>
+    ),
+    intents: [
+      <Button>Next</Button>,
+    ],
+  })
+})
+
+app.frame('/mint', (c) => {
+  return c.res({
+    image: (
+      <div style={{
+        display: 'flex',
+        backgroundColor: 'black',
+        color: 'white',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+      }}>
+        <Image src='/landing.png'></Image>
+      </div>
+    ),
+    intents: [
+      <Button.Link href='https://mint.scroll.io/endless-scroll'>Mint!</Button.Link>,
+      <Button action='/q'>Skip</Button>,
     ],
   })
 })
