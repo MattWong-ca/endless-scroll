@@ -164,6 +164,9 @@ app.frame('/a', (c) => {
   const correctAnsewr = questions[state.currentQuestionIndex].correctAnswer == buttonValue;
   if (correctAnsewr) {
     state.points += 100;
+    state.inARow += 1;
+  } else {
+    state.inARow = 0;
   }
   let mintNext = false;
   if (state.counter == 10) {
@@ -172,7 +175,7 @@ app.frame('/a', (c) => {
   }
 
   return c.res({
-    action: mintNext ? '/mint' : '/q',
+    action: state.inARow == 7 ? '/7' : mintNext ? '/mint' : '/q',
     image: (
       <div style={{
         display: 'flex',
@@ -219,6 +222,32 @@ app.frame('/mint', (c) => {
     ),
     intents: [
       <Button.Link href='https://mint.scroll.io/endless-scroll'>Mint!</Button.Link>,
+      <Button action='/q'>Skip</Button>,
+    ],
+  })
+})
+
+app.frame('/7', (c) => {
+  return c.res({
+    image: (
+      <div style={{
+        display: 'flex',
+        backgroundColor: 'black',
+        color: 'white',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+      }}>
+        <div>{`You got 7 in a row!`}</div>
+      </div>
+    ),
+    intents: [
+      <Button.Link href='https://mint.scroll.io/endless-scroll'>Share</Button.Link>,
       <Button action='/q'>Skip</Button>,
     ],
   })
