@@ -2,29 +2,12 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import { Button, Frog } from 'frog'
 import { devtools } from 'frog/dev'
 import { neynar as neynarHub } from 'frog/hubs'
-import { neynar } from "frog/middlewares"
+// import { neynar } from "frog/middlewares"
 import { createSystem } from 'frog/ui'
 import { handle } from 'frog/vercel'
+import { questions } from '../questions'
 import dotenv from 'dotenv'
 dotenv.config()
-
-const questions = [
-  {
-    question: 'Who is a co-founder of Scroll?',
-    answers: ['Seung Yoon Lee', 'Sandy Peng', 'Jason Zhao', 'Cecilia Hsueh'],
-    correctAnswer: 'Sandy Peng'
-  },
-  {
-    question: 'Which is not EVM compatible?',
-    answers: ['Aptos', 'BNB Chain', 'Scroll', 'Metis'],
-    correctAnswer: 'Aptos'
-  },
-  {
-    question: 'When was Scroll founded?',
-    answers: ['2019', '2020', '2021', '2022'],
-    correctAnswer: '2021'
-  },
-]
 
 const { Image, vars } = createSystem({
   fonts: {
@@ -77,12 +60,14 @@ export const app = new Frog<{ State: State }>({
     counter: 0,
     inARow: 0,
   }
-}).use(
-  neynar({
-    apiKey: "NEYNAR_FROG_FM",
-    features: ["interactor", "cast"],
-  })
-);
+})
+
+// .use(
+//   neynar({
+//     apiKey: "NEYNAR_FROG_FM",
+//     features: ["interactor", "cast"],
+//   })
+// );
 
 app.frame('/', (c) => {
   return c.res({
@@ -169,7 +154,7 @@ app.frame('/a', (c) => {
     state.inARow = 0;
   }
   let mintNext = false;
-  if (state.counter == 10) {
+  if (state.counter % 10 == 0) {
     mintNext = true;
     state.counter = 0;
   }
@@ -189,10 +174,17 @@ app.frame('/a', (c) => {
         fontWeight: 500,
         fontFamily: 'Poppins, sans-serif',
         padding: '70px',
+        // justifyContent: 'center',
+        alignItems: 'center',
       }}>
-        <div>{`${correctAnsewr ? 'Correct!' : 'Incorrect!'}`}</div>
-        {!correctAnsewr && <div>{`Correct answer: ${questions[state.currentQuestionIndex].correctAnswer}`}</div>}
-        <div>{`${state.points}`}</div>
+        <div style={{ fontSize: '100px', fontWeight: 600, marginTop: '160px' }}>{`${correctAnsewr ? 'Correct!' : 'Incorrect'}`}</div>
+        {!correctAnsewr &&
+          <div style={{ display: 'flex', flexDirection: 'column', fontSize: '60px', alignItems: 'center' }}>
+            <div style={{ fontSize: '30px', marginTop: '-5px' }}>Correct answer:</div>
+            <div style={{ fontWeight: 600, marginTop: '-2px', fontSize: '50px' }}>{questions[state.currentQuestionIndex].correctAnswer}</div>
+          </div>
+        }
+        <div style={{ fontSize: '40px', marginTop: '10px' }}>{`Points: ${state.points}`}</div>
       </div>
     ),
     intents: [
@@ -232,22 +224,24 @@ app.frame('/7', (c) => {
     image: (
       <div style={{
         display: 'flex',
-        backgroundColor: 'black',
-        color: 'white',
+        flexDirection: 'column',
+        backgroundColor: '#fef1dd',
+        color: 'black',
         width: '100%',
         height: '100%',
         overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: '50px',
-        fontWeight: 500,
+        fontSize: '70px',
+        fontWeight: 600,
         fontFamily: 'Poppins, sans-serif',
       }}>
         <div>{`You got 7 in a row!`}</div>
+        <div style={{ fontSize: '40px', fontWeight: 500 }}>{`Share this with your friends!`}</div>
       </div>
     ),
     intents: [
-      <Button.Link href='https://mint.scroll.io/endless-scroll'>Share</Button.Link>,
+      <Button.Link href='https://warpcast.com/~/compose?text=I%20have%20a%207-question%20streak%20on%20Endless%20Scroll!%20%F0%9F%93%9C&embeds[]=https://farcaster.xyz'>Share</Button.Link>,
       <Button action='/q'>Skip</Button>,
     ],
   })
