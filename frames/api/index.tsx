@@ -39,7 +39,6 @@ const { Image, vars } = createSystem({
   }
 })
 
-// Define the State type
 type State = {
   currentQuestionIndex: number;
   points: number;
@@ -47,7 +46,6 @@ type State = {
   inARow: number;
 }
 
-// Initialize the Frog app with the State type and initial state
 export const app = new Frog<{ State: State }>({
   title: 'Endless Scroll',
   hub: neynarHub({ apiKey: 'NEYNAR_FROG_FM' }),
@@ -174,7 +172,6 @@ app.frame('/a', (c) => {
         fontWeight: 500,
         fontFamily: 'Poppins, sans-serif',
         padding: '70px',
-        // justifyContent: 'center',
         alignItems: 'center',
       }}>
         <div style={{ fontSize: '100px', fontWeight: 600, marginTop: '160px' }}>{`${correctAnsewr ? 'Correct!' : 'Incorrect'}`}</div>
@@ -209,12 +206,12 @@ app.frame('/mint', (c) => {
         fontWeight: 500,
         fontFamily: 'Poppins, sans-serif',
       }}>
-        <Image src='/landing.png'></Image>
+        <Image src='/mint.png'></Image>
       </div>
     ),
     intents: [
       <Button.Link href='https://mint.scroll.io/endless-scroll'>Mint!</Button.Link>,
-      <Button action='/q'>Skip</Button>,
+      <Button action='/q'>Next</Button>,
     ],
   })
 })
@@ -242,7 +239,7 @@ app.frame('/7', (c) => {
     ),
     intents: [
       <Button.Link href='https://warpcast.com/~/compose?text=I%20have%20a%207-question%20streak%20on%20Endless%20Scroll!%20%F0%9F%93%9C&embeds[]=https://farcaster.xyz'>Share</Button.Link>,
-      <Button action='/q'>Skip</Button>,
+      <Button action='/q'>Next</Button>,
     ],
   })
 })
