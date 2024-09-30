@@ -351,7 +351,7 @@ app.frame('/mint', (c) => {
       </div>
     ),
     intents: [
-      <Button.Link href='https://mint.scroll.io/endless-scroll'>Mint!</Button.Link>,
+      <Button.Link href='https://endlessscroll.vercel.app/'>Mint!</Button.Link>,
       <Button action='/q'>Next</Button>,
     ],
   })
@@ -379,7 +379,7 @@ app.frame('/7', (c) => {
       </div>
     ),
     intents: [
-      <Button.Link href='https://warpcast.com/~/compose?text=I%20have%20a%207-question%20streak%20on%20Endless%20Scroll!%20%F0%9F%93%9C&embeds[]=https://farcaster.xyz'>Share</Button.Link>,
+      <Button.Link href='https://warpcast.com/~/compose?text=I%20have%20a%207-question%20streak%20on%20Endless%20Scroll!%20%F0%9F%93%9C&embeds[]=https://endless-scroll-frames.vercel.app/api/start'>Share</Button.Link>,
       <Button action='/q'>Next</Button>,
     ],
   })
