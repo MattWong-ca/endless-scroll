@@ -4,22 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import nftJson from "./utils/nft.json";
-import { Alchemy, Network } from "alchemy-sdk";
 
 declare global {
   interface Window {
     ethereum?: import('ethers').Eip1193Provider
   }
 }
-
-const { API_KEY } = process.env;
-
-const settings = {
-  apiKey: API_KEY,
-  network: Network.SCROLL_SEPOLIA, // Replace with your desired network
-};
-
-const alchemy = new Alchemy(settings);
 
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
