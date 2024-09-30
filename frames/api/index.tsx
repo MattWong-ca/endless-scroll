@@ -82,7 +82,7 @@ app.frame('/gm', (c) => {
 
 
 
-app.frame('/', (c) => {
+app.frame('/test', (c) => {
   return c.res({
     image: (
       <div style={{
