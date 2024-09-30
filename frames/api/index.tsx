@@ -213,7 +213,7 @@ export const app = new Frog<{ State: State }>({
   })
 );
 
-app.frame('/', (c) => {
+app.frame('/start', (c) => {
   return c.res({
     image: (
       <div style={{
