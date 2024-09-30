@@ -5,7 +5,7 @@ import { neynar as neynarHub } from 'frog/hubs'
 import { neynar } from "frog/middlewares"
 import { createSystem } from 'frog/ui'
 import { handle } from 'frog/vercel'
-// import { questions } from '../questions'
+import { questions } from '../questions'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -39,25 +39,25 @@ const { Image, vars } = createSystem({
   }
 })
 
-// type State = {
-//   currentQuestionIndex: number;
-//   points: number;
-//   counter: number;
-//   inARow: number;
-// }
+type State = {
+  currentQuestionIndex: number;
+  points: number;
+  counter: number;
+  inARow: number;
+}
 
-export const app = new Frog({
+export const app = new Frog<{ State: State }>({
   title: 'Endless Scroll',
   hub: neynarHub({ apiKey: 'NEYNAR_FROG_FM' }),
   ui: { vars },
   assetsPath: "/",
   basePath: "/api",
-  // initialState: {
-  //   currentQuestionIndex: 0,
-  //   points: 0,
-  //   counter: 0,
-  //   inARow: 0,
-  // }
+  initialState: {
+    currentQuestionIndex: 0,
+    points: 0,
+    counter: 0,
+    inARow: 0,
+  }
 }).use(
   neynar({
     apiKey: "NEYNAR_FROG_FM",
@@ -79,10 +79,7 @@ app.frame('/gm', (c) => {
   })
 })
 
-
-
-
-app.frame('/test', (c) => {
+app.frame('/start', (c) => {
   return c.res({
     image: (
       <div style={{
@@ -98,57 +95,57 @@ app.frame('/test', (c) => {
       </div>
     ),
     intents: [
-      <Button action='/gm'>Start!</Button>,
+      <Button action='/q'>Start!</Button>,
     ],
   })
 })
 
-// app.frame('/q', (c) => {
-//   const { deriveState } = c;
-//   const questionIndex = Math.floor(Math.random() * questions.length);
-//   const question = questions[questionIndex];
-//   const state = deriveState(() => { });
-//   state.currentQuestionIndex = questionIndex;
-//   state.counter += 1;
+app.frame('/q', (c) => {
+  const { deriveState } = c;
+  const questionIndex = Math.floor(Math.random() * questions.length);
+  const question = questions[questionIndex];
+  const state = deriveState(() => { });
+  state.currentQuestionIndex = questionIndex;
+  state.counter += 1;
 
-//   return c.res({
-//     action: '/a',
-//     image: (
-//       <div style={{
-//         display: 'flex',
-//         flexDirection: 'column',
-//         backgroundColor: '#fef1dd',
-//         color: 'black',
-//         width: '100%',
-//         height: '100%',
-//         overflow: 'hidden',
-//         fontSize: '50px',
-//         fontWeight: 500,
-//         fontFamily: 'Poppins, sans-serif',
-//         padding: '70px',
-//       }}>
-//         <div style={{ fontWeight: 600, marginBottom: '30px' }}>{`${question.question}`}</div>
-//         <div style={{
-//           display: 'flex',
-//           flexDirection: 'column',
-//           gap: '20px',
-//           width: '100%',
-//           marginLeft: '40px',
-//         }}>
-//           {question.answers.map((answer, index) => (
-//             <div style={{ fontSize: '40px' }} key={index}>{`${String.fromCharCode(97 + index)}) ${answer}`}</div>
-//           ))}
-//         </div>
-//       </div>
-//     ),
-//     intents: [
-//       <Button value={question.answers[0]}>a</Button>,
-//       <Button value={question.answers[1]}>b</Button>,
-//       <Button value={question.answers[2]}>c</Button>,
-//       <Button value={question.answers[3]}>d</Button>,
-//     ],
-//   })
-// })
+  return c.res({
+    action: '/a',
+    image: (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fef1dd',
+        color: 'black',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+        padding: '70px',
+      }}>
+        <div style={{ fontWeight: 600, marginBottom: '30px' }}>{`${question.question}`}</div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          width: '100%',
+          marginLeft: '40px',
+        }}>
+          {question.answers.map((answer, index) => (
+            <div style={{ fontSize: '40px' }} key={index}>{`${String.fromCharCode(97 + index)}) ${answer}`}</div>
+          ))}
+        </div>
+      </div>
+    ),
+    intents: [
+      <Button value={question.answers[0]}>a</Button>,
+      <Button value={question.answers[1]}>b</Button>,
+      <Button value={question.answers[2]}>c</Button>,
+      <Button value={question.answers[3]}>d</Button>,
+    ],
+  })
+})
 
 // app.frame('/a', (c) => {
 //   const { buttonValue } = c;
