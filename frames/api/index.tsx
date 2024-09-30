@@ -213,21 +213,7 @@ export const app = new Frog<{ State: State }>({
   })
 );
 
-app.frame('/gm', (c) => {
-  return c.res({
-    action: '/q',
-    image: (
-      <div> 
-        {`Hello`}
-      </div>
-    ),
-    intents: [
-      <Button>Start!</Button>,
-    ],
-  })
-})
-
-app.frame('/start', (c) => {
+app.frame('/', (c) => {
   return c.res({
     image: (
       <div style={{
@@ -295,109 +281,109 @@ app.frame('/q', (c) => {
   })
 })
 
-// app.frame('/a', (c) => {
-//   const { buttonValue } = c;
-//   const { deriveState } = c;
-//   const state = deriveState(() => { });
-//   const correctAnsewr = questions[state.currentQuestionIndex].correctAnswer == buttonValue;
-//   if (correctAnsewr) {
-//     state.points += 100;
-//     state.inARow += 1;
-//   } else {
-//     state.inARow = 0;
-//   }
-//   let mintNext = false;
-//   if (state.counter % 10 == 0) {
-//     mintNext = true;
-//     state.counter = 0;
-//   }
+app.frame('/a', (c) => {
+  const { buttonValue } = c;
+  const { deriveState } = c;
+  const state = deriveState(() => { });
+  const correctAnsewr = questions[state.currentQuestionIndex].correctAnswer == buttonValue;
+  if (correctAnsewr) {
+    state.points += 100;
+    state.inARow += 1;
+  } else {
+    state.inARow = 0;
+  }
+  let mintNext = false;
+  if (state.counter % 10 == 0) {
+    mintNext = true;
+    state.counter = 0;
+  }
 
-//   return c.res({
-//     action: state.inARow == 7 ? '/7' : mintNext ? '/mint' : '/q',
-//     image: (
-//       <div style={{
-//         display: 'flex',
-//         flexDirection: 'column',
-//         backgroundColor: '#fef1dd',
-//         color: 'black',
-//         width: '100%',
-//         height: '100%',
-//         overflow: 'hidden',
-//         fontSize: '50px',
-//         fontWeight: 500,
-//         fontFamily: 'Poppins, sans-serif',
-//         padding: '70px',
-//         alignItems: 'center',
-//       }}>
-//         <div style={{ fontSize: '100px', fontWeight: 600, marginTop: '160px' }}>{`${correctAnsewr ? 'Correct!' : 'Incorrect'}`}</div>
-//         {!correctAnsewr &&
-//           <div style={{ display: 'flex', flexDirection: 'column', fontSize: '60px', alignItems: 'center' }}>
-//             <div style={{ fontSize: '30px', marginTop: '-5px' }}>Correct answer:</div>
-//             <div style={{ fontWeight: 600, marginTop: '-2px', fontSize: '50px' }}>{questions[state.currentQuestionIndex].correctAnswer}</div>
-//           </div>
-//         }
-//         <div style={{ fontSize: '40px', marginTop: '10px' }}>{`Points: ${state.points}`}</div>
-//       </div>
-//     ),
-//     intents: [
-//       <Button>Next</Button>,
-//     ],
-//   })
-// })
+  return c.res({
+    action: state.inARow == 7 ? '/7' : mintNext ? '/mint' : '/q',
+    image: (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fef1dd',
+        color: 'black',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+        padding: '70px',
+        alignItems: 'center',
+      }}>
+        <div style={{ fontSize: '100px', fontWeight: 600, marginTop: '160px' }}>{`${correctAnsewr ? 'Correct!' : 'Incorrect'}`}</div>
+        {!correctAnsewr &&
+          <div style={{ display: 'flex', flexDirection: 'column', fontSize: '60px', alignItems: 'center' }}>
+            <div style={{ fontSize: '30px', marginTop: '-5px' }}>Correct answer:</div>
+            <div style={{ fontWeight: 600, marginTop: '-2px', fontSize: '50px' }}>{questions[state.currentQuestionIndex].correctAnswer}</div>
+          </div>
+        }
+        <div style={{ fontSize: '40px', marginTop: '10px' }}>{`Points: ${state.points}`}</div>
+      </div>
+    ),
+    intents: [
+      <Button>Next</Button>,
+    ],
+  })
+})
 
-// app.frame('/mint', (c) => {
-//   return c.res({
-//     image: (
-//       <div style={{
-//         display: 'flex',
-//         backgroundColor: 'black',
-//         color: 'white',
-//         width: '100%',
-//         height: '100%',
-//         overflow: 'hidden',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         fontSize: '50px',
-//         fontWeight: 500,
-//         fontFamily: 'Poppins, sans-serif',
-//       }}>
-//         <Image src='/mint.png'></Image>
-//       </div>
-//     ),
-//     intents: [
-//       <Button.Link href='https://mint.scroll.io/endless-scroll'>Mint!</Button.Link>,
-//       <Button action='/q'>Next</Button>,
-//     ],
-//   })
-// })
+app.frame('/mint', (c) => {
+  return c.res({
+    image: (
+      <div style={{
+        display: 'flex',
+        backgroundColor: 'black',
+        color: 'white',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+      }}>
+        <Image src='/mint.png'></Image>
+      </div>
+    ),
+    intents: [
+      <Button.Link href='https://mint.scroll.io/endless-scroll'>Mint!</Button.Link>,
+      <Button action='/q'>Next</Button>,
+    ],
+  })
+})
 
-// app.frame('/7', (c) => {
-//   return c.res({
-//     image: (
-//       <div style={{
-//         display: 'flex',
-//         flexDirection: 'column',
-//         backgroundColor: '#fef1dd',
-//         color: 'black',
-//         width: '100%',
-//         height: '100%',
-//         overflow: 'hidden',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         fontSize: '70px',
-//         fontWeight: 600,
-//         fontFamily: 'Poppins, sans-serif',
-//       }}>
-//         <div>{`You got 7 in a row!`}</div>
-//         <div style={{ fontSize: '40px', fontWeight: 500 }}>{`Share this with your friends!`}</div>
-//       </div>
-//     ),
-//     intents: [
-//       <Button.Link href='https://warpcast.com/~/compose?text=I%20have%20a%207-question%20streak%20on%20Endless%20Scroll!%20%F0%9F%93%9C&embeds[]=https://farcaster.xyz'>Share</Button.Link>,
-//       <Button action='/q'>Next</Button>,
-//     ],
-//   })
-// })
+app.frame('/7', (c) => {
+  return c.res({
+    image: (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fef1dd',
+        color: 'black',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '70px',
+        fontWeight: 600,
+        fontFamily: 'Poppins, sans-serif',
+      }}>
+        <div>{`You got 7 in a row!`}</div>
+        <div style={{ fontSize: '40px', fontWeight: 500 }}>{`Share this with your friends!`}</div>
+      </div>
+    ),
+    intents: [
+      <Button.Link href='https://warpcast.com/~/compose?text=I%20have%20a%207-question%20streak%20on%20Endless%20Scroll!%20%F0%9F%93%9C&embeds[]=https://farcaster.xyz'>Share</Button.Link>,
+      <Button action='/q'>Next</Button>,
+    ],
+  })
+})
 
 // @ts-ignore
 const isEdgeFunction = typeof EdgeFunction !== "undefined";
