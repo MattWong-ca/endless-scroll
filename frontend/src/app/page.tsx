@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import nftJson from "./utils/nft.json";
 import { Alchemy, Network } from "alchemy-sdk";
@@ -21,9 +21,14 @@ const settings = {
 
 const alchemy = new Alchemy(settings);
 
-
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [txHash, setTxHash] = useState<string | null>(null);
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
 
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
@@ -51,18 +56,16 @@ export default function Home() {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-      const contractAddress = "0xfF70C3ae45022AE728b62c90d0c14D526560e9Cf"; // TO DO: get contract address from deployment
+      const contractAddress = "0x526552E31135A4eC411acf1DaACA84Df5CcBFd41"; // TO DO: get contract address from deployment
       const mintContract = new ethers.Contract(contractAddress, nftJson.abi, signer);
 
-      const nonce = await alchemy.core.getTransactionCount(walletAddress!, "latest");
-      const gasEstimate = await mintContract.safeMint.estimateGas(walletAddress);
-
-      const tx = await mintContract.safeMint(walletAddress, 1, {
-        nonce: nonce,
-        gasLimit: gasEstimate,
-      })
+      const tx = await mintContract.mintNFT();
+      setIsLoading(true);
       await tx.wait();
+      setIsLoading(false);
+      setTxHash(tx.hash);
       console.log("Minted! ", tx.hash);
+      
     } catch (error) {
       console.error("Error minting:", error);
       alert("Failed to mint. Please try again.");
@@ -91,9 +94,28 @@ export default function Home() {
           alt="NFT"
           style={{ border: '3px solid black', borderRadius: '10px', marginBottom: '24px' }}
         />
-        <button className="w-full bg-black text-white py-3 px-4 rounded font-semibold hover:bg-gray-800 transition-colors" onClick={mintNFT}>
-          Mint
-        </button>
+        {
+          isLoading ? <p>Loading...</p> : txHash ? (
+            <p>
+              Minted! Tx Hash:{' '}
+              <a
+                href={`https://sepolia.scrollscan.dev/tx/${txHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-700 underline"
+              >
+                {`${txHash.slice(0, 6)}...${txHash.slice(-4)}`}
+              </a>
+            </p>
+          ) : (
+            <button
+              className="w-full bg-black text-white py-3 px-4 rounded font-semibold hover:bg-gray-800 transition-colors"
+              onClick={mintNFT}
+            >
+              Mint
+            </button>
+          )
+        }
       </div>
 
       <div className="mt-16">
