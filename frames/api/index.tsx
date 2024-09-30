@@ -2,7 +2,7 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import { Button, Frog } from 'frog'
 import { devtools } from 'frog/dev'
 import { neynar as neynarHub } from 'frog/hubs'
-// import { neynar } from "frog/middlewares"
+import { neynar } from "frog/middlewares"
 import { createSystem } from 'frog/ui'
 import { handle } from 'frog/vercel'
 import { questions } from '../questions'
@@ -58,14 +58,12 @@ export const app = new Frog<{ State: State }>({
     counter: 0,
     inARow: 0,
   }
-})
-
-// .use(
-//   neynar({
-//     apiKey: "NEYNAR_FROG_FM",
-//     features: ["interactor", "cast"],
-//   })
-// );
+}).use(
+  neynar({
+    apiKey: "NEYNAR_FROG_FM",
+    features: ["interactor", "cast"],
+  })
+);
 
 app.frame('/', (c) => {
   return c.res({
