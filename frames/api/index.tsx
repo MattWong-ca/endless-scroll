@@ -82,31 +82,30 @@ app.frame('/gm', (c) => {
 
 
 
-// app.frame('/', (c) => {
-//   return c.res({
-//     action: '/q',
-//     image: (
-//       <div style={{
-//         display: 'flex',
-//         backgroundColor: 'black',
-//         color: 'white',
-//         width: '100%',
-//         height: '100%',
-//         overflow: 'hidden',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         fontSize: '50px',
-//         fontWeight: 500,
-//         fontFamily: 'Poppins, sans-serif',
-//       }}>
-//         <Image src='/landing.png'></Image>
-//       </div>
-//     ),
-//     intents: [
-//       <Button>Start!</Button>,
-//     ],
-//   })
-// })
+app.frame('/', (c) => {
+  return c.res({
+    image: (
+      <div style={{
+        display: 'flex',
+        backgroundColor: 'black',
+        color: 'white',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '50px',
+        fontWeight: 500,
+        fontFamily: 'Poppins, sans-serif',
+      }}>
+        <Image src={`/landing.png`}></Image>
+      </div>
+    ),
+    intents: [
+      <Button action='/gm'>Start!</Button>,
+    ],
+  })
+})
 
 // app.frame('/q', (c) => {
 //   const { deriveState } = c;
